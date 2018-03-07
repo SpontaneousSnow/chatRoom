@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      .input { border: 0; padding: 10px; width: 90%; }
+        .buttons{float:right; width:10%} 
+ 
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+     
+    <ul id="username"></ul>
+    <ul id="messages"></ul>
+    
+    <form action="">
+      <input id="n" class="input" autocomplete="off" placeholder="UserName"/>
+      <input id="m" class="input"autocomplete="off" placeholder="Message"/>
+      <input id="img" class="input" autocomplete="off" placeholder="Image URL" />
+      <input id="col"class="buttons" type="color"/><br>
+      <button class="buttons">Send</button>
+            
+    </form>
+      <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="/socket.io-stream.js"></script>
+        <script>
+  $(function () {
+    var socket = io();
+    $('form').submit(function(){
+      //$('#imgid').attr('src', $('#img').val());
+      let usr=$('#n').val();
+      let msg=$('#m').val();
+      let img=$('#img').val();
+      let col=$('#col').val();
+      socket.emit('chat message',  {usr, msg, img, col});
+      $('#m').val('');
+      $('#n').val('');
+      $('#img').val('');
+      $('#col').val('#000000');
+      return false;
+    });
+    socket.on('chat message', function(data){
+        console.log(data);
+      $('#messages').append($('<li style="color:'+data.col+'">').html("<b>"+data.usr+"</b>"+"<br></br>"+data.msg+"<br></br>"+data.img));     
+    });
+  });
+</script>
+      <script>
+function b64(e){var t="";var n=new Uint8Array(e);var r=n.byteLength;for(var i=0;i<r;i++){t+=String.fromCharCode(n[i])}return window.btoa(t)}
+
+$(document).ready(function() {
+  
+  var socket = io();
+
+//  socket.on('imageConversionByClient', function(data) {
+//    $("#img").attr("src","data:image/png;base64,"+b64(data.buffer));
+//  });
+
+//  socket.on('imageConversionByServer', function(data) {
+//    $("#img2").attr("src",data);
+//  });
+
+});
+
+</script>
+  </body>
+</html>
